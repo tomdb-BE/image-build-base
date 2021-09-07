@@ -1,6 +1,7 @@
 ARG GOLANG_VERSION=1.13.15
 FROM library/golang:${GOLANG_VERSION}-alpine AS goboring
 ARG GOBORING_BUILD=4
+ENV GOROOT_BOOTSTRAP=/usr/local/go
 RUN apk --no-cache add \
     bash \
     g++
@@ -8,6 +9,7 @@ ADD https://go-boringcrypto.storage.googleapis.com/go${GOLANG_VERSION}b${GOBORIN
 WORKDIR /usr/local/boring
 RUN tar xzf ../boring.tgz
 WORKDIR /usr/local/boring/go/src
+ADD ./make.bash ./make.bash
 RUN ./make.bash
 COPY scripts/ /usr/local/boring/go/bin/
 
@@ -16,7 +18,7 @@ ARG TRIVY_VERSION=0.11.0
 RUN set -ex; \
     if [ "$(go env GOARCH)" = "arm64" ]; then \
         wget -q "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-ARM64.tar.gz"; \
-        tar -xzf trivy_${TRIVY_VERSION}_Linux-ARM64.tar.gz --include trivy -C /usr/local/bin; \
+        tar -xzf trivy_${TRIVY_VERSION}_Linux-ARM64.tar.gz;  \
         mv trivy /usr/local/bin;                             \
     else                                                     \
         wget -q "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"; \
@@ -25,6 +27,7 @@ RUN set -ex; \
     fi
 
 FROM library/golang:${GOLANG_VERSION}-alpine
+ENV GOROOT_BOOTSTRAP=/usr/local/go
 RUN apk --no-cache add \
     bash \
     coreutils \
@@ -38,6 +41,8 @@ RUN apk --no-cache add \
     mercurial \
     rsync \
     subversion \
+    binutils \
+    binutils-gold \
     wget
 RUN rm -fr /usr/local/go/*
 COPY --from=goboring /usr/local/boring/go/ /usr/local/go/
