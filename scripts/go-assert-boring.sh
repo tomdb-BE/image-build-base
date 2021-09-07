@@ -1,6 +1,7 @@
 #!/bin/sh
 if [ "$(go env GOARCH)" = "arm64" ]; then
     echo "WARNING: goboring assertion currently not support on arm - skipping..."
+    exit 0
 fi
 if [ -z "$*" ]; then
     echo "usage: $0 file1 [file2 ... fileN]"
