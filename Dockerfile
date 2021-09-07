@@ -9,7 +9,6 @@ ADD https://go-boringcrypto.storage.googleapis.com/go${GOLANG_VERSION}b${GOBORIN
 WORKDIR /usr/local/boring
 RUN tar xzf ../boring.tgz
 WORKDIR /usr/local/boring/go/src
-ADD ./make.bash ./make.bash
 RUN ./make.bash
 COPY scripts/ /usr/local/boring/go/bin/
 
