@@ -7,7 +7,7 @@ else
 endif
 
 ORG             ?= rancher
-TAG 		?= v1.17.5b7-multiarch
+TAG 		?= v1.17.6b7-multiarch
 GOLANG_VERSION 	?= $(shell echo $(TAG) | sed -e 's/\-.*//' | sed -e "s/v\(.*\)b.*/\1/g")
 GOBORING_BUILD	?= $(shell echo $(TAG) | sed -e 's/\-.*//' | sed -e "s/v.*b//g")
 
